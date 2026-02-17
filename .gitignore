@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+venv/
+env/
+.env
+
+# Large Datasets (The 1.4GB culprits)
+data/ibm_aml/
+data/paysim/
+data/synthetic_aml/
+
+# Database and Vector Store
+# Note: We ignore the actual DB files so the repo stays light. 
+# You will run your scripts to regenerate these on the host.
+*.db
+chroma_db/
+
+# Local model storage (Mistral/Ollama)
+models/mistral/
+models/nomic/
+
+# Generated Outputs
+outputs/
+data/generated/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+AMLSim/
+.claude/
+paysim1.zip
+nul
+PS5_SAR_Generator_Implementation_Guide.md 
+synthetic-transaction-monitoring-dataset-aml.zip
+*.zip

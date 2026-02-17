@@ -1,0 +1,13 @@
+streamlit
+pandas
+numpy
+plotly
+joblib
+scikit-learn
+shap
+xgboost
+chromadb
+langchain
+langchain-community
+langchain-groq
+faker

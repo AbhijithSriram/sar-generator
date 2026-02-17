@@ -1,0 +1,139 @@
+SAR Narrative Generator with Audit Trail
+
+Problem Statement 
+
+SAR Narrative Generator with Audit Trail - Banks must file Suspicious Activity Reports (SARs) whenever they detect activity that may indicate money laundering, fraud, or other financial crime. Writing these SAR narratives is mandatory, high-risk, and labor-intensive.
+
+There is a need for a solution that can reliably generate clear, consistent, regulator-ready SAR narratives while ensuring transparency and auditability of the underlying data and decisioning steps. This solution must reduce manual effort, support analysts in producing defensible reports on scale, and seamlessly integrate with varied data sources—without being tied to any specific case management platform or technology stack.
+
+Challenge
+
+Banks are required to file high-quality Suspicious Activity Reports (SARs) that clearly and accurately document potential financial crime. However, drafting these narratives is a heavily manual task that takes analysts 5–6 hours per report, and large institutions produce thousands annually. With regulatory expectations rising and scrutiny on narrative clarity intensifying, poorly written SARs can lead to remediation demands or enforcement actions. At the same time, compliance teams are understaffed and struggling to keep pace, resulting in operational bottlenecks, and growing backlogs.
+
+Technology - Below mentioned are reference only, open to use any open-source tech stack.
+
+Open-Source Stack 
+
+
+
+
+
+LLM: Llama 3.1 (70B/8B), Mistral 7B → Narrative generation 
+
+
+
+Framework: LangChain, LlamaIndex → Orchestration & RAG pipeline
+
+
+
+Vector Database: ChromaDB, Weaviate, Milvus → Store SAR templates & regulatory guidelines.
+
+
+
+Explainability Tools: SHAP, LangChain callbacks → Reasoning trace & audit trail
+
+
+
+Frontend: Streamlit, Gradio → Demo UI
+
+
+
+Database: PostgreSQL → Case storage & audit logs
+
+ AWS Stack
+
+
+
+
+
+LLM: Amazon Bedrock (Claude, Titan) → Narrative generation
+
+
+
+Vector Store: Amazon OpenSearch Serverless → Templates & past SAR storage.
+
+
+
+Orchestration: AWS Step Functions → Workflow management
+
+
+
+Storage: Amazon S3 → Document storage
+
+
+
+Database: Amazon RDS / DynamoDB → Audit trail & case data
+
+
+
+Frontend: AWS Amplify → Demo hosting
+
+Data 
+
+Data Analysis: Take transaction alerts and customer data as input, Customer kYC data, Account and transaction data, data from case management tools.
+
+Design Considerations
+
+
+
+
+
+Output - Generates a draft SAR narrative report. Provision of allowing a human analyst to edit and approve.
+
+
+
+Alerting Mechanism: Proper alert should be created.
+
+
+
+Visualization: Demonstrate UI for prompt display and should be interactive to take input
+
+
+
+Scalability: It should be able to run multiple instances of this tool using same data source for horizontal scaling.
+
+
+
+Predictive Analytics: Instruct the LLM in its system prompt to be unbiased and not to discriminate. Limit the scope of your LLM’s outputs to on-topic subjects.
+
+
+
+Environment-Aware Analysis: Should be capable of understanding constraints of different hosting environments (on-premises, cloud, multi-cloud) in SAR report generation using prompt.
+
+
+
+Risks – Avoid the data leakage across the domain boundaries e.g., customer, transaction, fraud etc.
+
+
+
+Controls - Implement role-based data access controls.
+
+
+
+Audit - Maintains complete audit trail (explains why it wrote what it wrote)
+
+Other Considerations (For reference only)
+
+Real Example: A customer receives ₹50 lakhs from 47 different accounts in one week, then immediately transfers it abroad. The compliance officer must draft a 2-page report explaining the transaction pattern, customer history, why it is suspicious, and link it to potential money laundering typologies.
+
+What You Need to Build
+
+An AI system that:
+
+1.Takes transaction alerts and customer data as input
+
+2.Generates a draft SAR narrative in proper regulatory format
+
+3.Maintains complete audit trail (explains why it wrote what it wrote)
+
+4.Allows human analysts to edit and approve
+
+Why Audit Trail Matters
+
+Regulators do not trust black-box AI. If your system says, "this is suspicious," you must explain why. The audit trail shows which data points influenced the narrative, which rules/patterns were matched, and why specific language was chosen.
+
+Benefits
+
+Automating SAR narrative drafting dramatically reduces the 5–6 hours analysts spend per report, easing pressure on understaffed compliance teams. It delivers consistent, regulatory narratives that eliminate quality variability and reduce the risk of errors or omissions. By consolidating fragmented data automatically, it improves accuracy and speeds up turnaround times. The solution also adds full transparency and auditability, strengthening regulatory defensibility. Overall, it boosts capacity, cuts operational bottlenecks, and enables analysts to focus on higher-value investigative work rather than manual writing.
+
+

@@ -1,0 +1,303 @@
+import json
+
+# Create 10 synthetic SAR templates based on common typologies
+# These will go into your vector database
+
+SAR_TEMPLATES = [
+    {
+        "typology": "structuring",
+        "narrative": """
+INTRODUCTION
+This Suspicious Activity Report concerns [CUSTOMER_NAME], a [OCCUPATION] who has been conducting a pattern of cash deposits designed to evade reporting requirements.
+
+WHO
+[CUSTOMER_NAME] (Account #[ACCOUNT_NUMBER]) is a [AGE]-year-old [OCCUPATION] residing at [ADDRESS]. The customer opened their account on [ACCOUNT_OPEN_DATE] with an initial deposit of $[INITIAL_DEPOSIT]. The customer reported annual income of $[ANNUAL_INCOME] on their account opening documentation.
+
+WHAT
+Between [START_DATE] and [END_DATE], the customer made [NUM_DEPOSITS] cash deposits totaling $[TOTAL_AMOUNT]. Each deposit was strategically kept below $10,000, ranging from $[MIN_AMOUNT] to $[MAX_AMOUNT]. The deposits followed a consistent pattern of occurring on [PATTERN_DESCRIPTION].
+
+WHEN
+The suspicious activity began on [START_DATE] and continued through [END_DATE], spanning [NUM_DAYS] days. Deposits were made approximately [FREQUENCY] times per week, typically on [DAYS_OF_WEEK].
+
+WHERE
+All deposits were made at [NUM_BRANCHES] different branch locations within the [GEOGRAPHIC_AREA] area. The customer alternated between branches with no apparent business rationale for the geographic distribution.
+
+WHY SUSPICIOUS
+This activity is consistent with structuring, a money laundering technique used to evade Currency Transaction Report (CTR) filing requirements. The deliberate structuring of deposits below $10,000, combined with the use of multiple branches and consistent timing pattern, indicates intentional avoidance of Bank Secrecy Act reporting.
+
+HOW
+The customer appears to be breaking larger amounts of cash into smaller deposits to avoid triggering CTR filings. The geographic distribution across multiple branches and the consistent timing suggest a sophisticated understanding of banking regulations.
+
+CONCLUSION
+Based on the pattern of cash deposits, multiple branch usage, and amounts consistently below reporting thresholds, this activity is being reported as suspected structuring. The bank has [ACTION_TAKEN] and will continue monitoring the account for further suspicious activity.
+""",
+        "key_elements": ["cash deposits", "multiple branches", "below $10,000", "consistent pattern"]
+    },
+    {
+        "typology": "rapid_movement",
+        "narrative": """
+INTRODUCTION
+This SAR documents suspicious rapid movement of funds through the account of [CUSTOMER_NAME], where large sums were deposited and immediately transferred to foreign beneficiaries.
+
+WHO
+[CUSTOMER_NAME] (Account #[ACCOUNT_NUMBER]) is a [AGE]-year-old [OCCUPATION]. The customer's stated occupation and account activity are inconsistent, as their reported income of $[ANNUAL_INCOME] does not support the transaction volumes observed.
+
+WHAT
+On [DATE], $[AMOUNT] was deposited into the account via [DEPOSIT_METHOD]. Within [TIMEFRAME], $[WITHDRAWAL_AMOUNT] was wire transferred to [BENEFICIARY_NAME] at [BENEFICIARY_BANK] in [BENEFICIARY_COUNTRY]. This pattern repeated [NUM_OCCURRENCES] times over [TIME_PERIOD].
+
+WHEN
+The suspicious activity occurred between [START_DATE] and [END_DATE]. Each cycle followed a consistent pattern: deposit on [DAY_PATTERN], followed by wire transfer within [HOURS] hours.
+
+WHERE
+Deposits originated from [SOURCE_DESCRIPTION]. Funds were transferred to accounts in [COUNTRIES_LIST], including jurisdictions known for weak AML controls.
+
+WHY SUSPICIOUS
+The rapid movement of funds through the account with minimal retention time is consistent with layering in money laundering schemes. The use of foreign beneficiaries in high-risk jurisdictions, combined with transaction amounts inconsistent with the customer's profile, raises concerns about the legitimacy of the funds.
+
+HOW
+The customer appears to be using the account as a conduit to move funds internationally. The minimal dwell time and immediate outbound transfers suggest the account is being used for pass-through transactions rather than legitimate banking purposes.
+
+CONCLUSION
+The rapid movement pattern, foreign beneficiaries, and profile inconsistencies indicate potential money laundering activity. This activity is being reported to FinCEN for investigation.
+""",
+        "key_elements": ["rapid transfers", "foreign beneficiaries", "pass-through account", "layering"]
+    },
+    {
+        "typology": "high_value_inconsistent",
+        "narrative": """
+INTRODUCTION
+This report concerns [CUSTOMER_NAME], whose recent account activity is significantly inconsistent with their customer profile and historical transaction patterns.
+
+WHO
+[CUSTOMER_NAME] (Account #[ACCOUNT_NUMBER]) is a [AGE]-year-old [OCCUPATION] who has maintained an account since [ACCOUNT_OPEN_DATE]. Historical monthly activity averaged $[HISTORICAL_AVG] in total transactions.
+
+WHAT
+Beginning [START_DATE], the account experienced a dramatic increase in activity. The customer received [NUM_DEPOSITS] deposits totaling $[TOTAL_DEPOSITS], representing a [PERCENTAGE]% increase over historical patterns. These deposits originated from [SOURCE_COUNT] different sources including [SOURCE_EXAMPLES].
+
+WHEN
+The deviation from normal patterns began on [START_DATE]. Prior to this date, the account maintained consistent activity levels for [YEARS] years. The sudden change occurred without prior notice or explanation.
+
+WHERE
+Transactions involved domestic and international parties across [NUM_JURISDICTIONS] jurisdictions. Notable transfers included payments to/from [COUNTRY_LIST].
+
+WHY SUSPICIOUS
+The dramatic increase in transaction volumes and values is inconsistent with the customer's documented income and occupation. No reasonable explanation exists for the sudden change in account behavior. The customer has not responded to the bank's inquiries regarding the source of funds.
+
+HOW
+The pattern suggests the account may have been compromised or is being used for purposes other than those stated at account opening. The diverse source of funds and lack of customer explanation raise concerns about potential money laundering or fraud.
+
+CONCLUSION
+Due to the significant deviation from historical patterns and inability to verify the source of funds, this activity is being reported as suspicious. The bank has [ACTION_TAKEN].
+""",
+        "key_elements": ["inconsistent with profile", "sudden increase", "multiple sources", "unresponsive customer"]
+    },
+    {
+        "typology": "trade_based",
+        "narrative": """
+INTRODUCTION
+This SAR concerns suspicious trade finance activity involving [CUSTOMER_NAME]'s business account, where transaction values appear inconsistent with the nature of goods described.
+
+WHO
+[CUSTOMER_NAME] operates [BUSINESS_NAME], a [BUSINESS_TYPE] that has maintained a business account (#[ACCOUNT_NUMBER]) since [ACCOUNT_OPEN_DATE]. The business is registered as a [LEGAL_ENTITY_TYPE] engaged in [STATED_BUSINESS_ACTIVITY].
+
+WHAT
+The customer has processed [NUM_TRANSACTIONS] letters of credit and wire transfers totaling $[TOTAL_AMOUNT] related to [GOODS_DESCRIPTION]. Review of the supporting documentation reveals significant discrepancies: invoice values for [SPECIFIC_GOODS] substantially exceed fair market value, with pricing [PERCENTAGE]% above industry standards.
+
+WHEN
+The suspicious transactions occurred between [START_DATE] and [END_DATE]. The pattern accelerated significantly after [ACCELERATION_DATE], with transaction frequency increasing from [INITIAL_FREQUENCY] to [CURRENT_FREQUENCY].
+
+WHERE
+Transactions involved counterparties in [COUNTRIES], including [SPECIFIC_JURISDICTION] which is identified by FATF as having strategic AML deficiencies. Goods were purportedly shipped through [PORTS/LOCATIONS].
+
+WHY SUSPICIOUS
+The over-valuation of goods is consistent with trade-based money laundering, where inflated invoices are used to justify value transfers. The involvement of high-risk jurisdictions and the significant price discrepancies from market rates indicate potential value transfer disguised as legitimate trade.
+
+HOW
+The customer appears to be using over-invoicing to justify large value transfers that may not correlate with actual goods movement. This is a common trade-based money laundering technique used to move value across borders while avoiding scrutiny.
+
+CONCLUSION
+The combination of over-valued goods, high-risk jurisdictions, and lack of reasonable business explanation supports filing this SAR for suspected trade-based money laundering.
+""",
+        "key_elements": ["trade finance", "over-invoicing", "high-risk jurisdiction", "value transfer"]
+    },
+    {
+        "typology": "third_party_payments",
+        "narrative": """
+INTRODUCTION
+This Suspicious Activity Report documents unusual third-party payment patterns involving [CUSTOMER_NAME]'s account that lack clear business purpose.
+
+WHO
+[CUSTOMER_NAME] (Account #[ACCOUNT_NUMBER]), a [AGE]-year-old [OCCUPATION], has maintained an account since [ACCOUNT_OPEN_DATE]. The customer's stated employment is with [EMPLOYER_NAME] with reported annual income of $[ANNUAL_INCOME].
+
+WHAT
+Analysis reveals [NUM_PAYMENTS] payments totaling $[TOTAL_AMOUNT] made to third parties with no apparent relationship to the customer. Recipients include [THIRD_PARTY_EXAMPLES]. Simultaneously, the account received [NUM_DEPOSITS] deposits from different third parties totaling $[DEPOSIT_AMOUNT].
+
+WHEN
+This activity pattern emerged on [START_DATE] and continued through [END_DATE]. The transactions typically occurred [PATTERN_TIMING], suggesting coordination.
+
+WHERE
+Third-party recipients were located across [NUM_STATES] states and [NUM_COUNTRIES] countries. Many payments were directed to [HIGH_RISK_LOCATIONS].
+
+WHY SUSPICIOUS
+The lack of apparent relationship between the account holder and the payment recipients, combined with the receipt of offsetting third-party deposits, suggests the account is being used as an intermediary in a larger scheme. This is inconsistent with the customer's stated occupation and normal banking behavior.
+
+HOW
+The pattern suggests possible involvement in a money mule operation, where the account is used to receive and redistribute funds as part of a broader money laundering or fraud scheme. The customer may be wittingly or unwittingly facilitating the movement of illicit funds.
+
+CONCLUSION
+The third-party payment patterns and lack of reasonable explanation indicate potential money laundering activity. This SAR is being filed to document the suspicious behavior.
+""",
+        "key_elements": ["third-party payments", "no clear relationship", "money mule", "offsetting deposits"]
+    },
+    {
+        "typology": "shell_company",
+        "narrative": """
+INTRODUCTION
+This report concerns [COMPANY_NAME], a business customer whose corporate structure and transaction patterns suggest it may be a shell company used for illicit purposes.
+
+WHO
+[COMPANY_NAME] (Account #[ACCOUNT_NUMBER]) is registered as a [LEGAL_ENTITY] in [JURISDICTION] on [REGISTRATION_DATE]. Listed officers include [OFFICER_NAMES]. Public records research reveals minimal online presence, no active website, and no verifiable business operations.
+
+WHAT
+The account processes an average of $[MONTHLY_VOLUME] monthly, primarily consisting of wire transfers. Despite the significant transaction volume, the company has no employees per state records, no physical office location, and no apparent legitimate business activity. Transactions include [NUM_WIRES] wire transfers totaling $[TOTAL_AMOUNT] to/from [COUNTERPARTY_DESCRIPTION].
+
+WHEN
+The account was opened on [OPEN_DATE]. Significant activity began immediately, with the first large transaction occurring [DAYS] days after opening. Activity has remained consistently high with no seasonal variation expected for the stated business type.
+
+WHERE
+Counterparties are located in [JURISDICTIONS], including several offshore financial centers. The company's registered address is [ADDRESS], which public records show is a virtual office/mail forwarding service.
+
+WHY SUSPICIOUS
+The lack of verifiable business operations, use of a virtual office, immediate high-volume transactions, and involvement with offshore jurisdictions are characteristic of shell companies used for money laundering. The company structure appears designed to obscure beneficial ownership and the source of funds.
+
+HOW
+The entity appears to exist primarily on paper to facilitate financial transactions while obscuring the true parties involved. This is consistent with shell company schemes used in money laundering, tax evasion, and sanctions evasion.
+
+CONCLUSION
+The combination of red flags indicates [COMPANY_NAME] may be a shell company engaged in suspicious financial activity. This SAR documents concerns for regulatory review.
+""",
+        "key_elements": ["shell company", "no business operations", "virtual office", "offshore jurisdictions"]
+    },
+    {
+        "typology": "cash_intensive_business",
+        "narrative": """
+INTRODUCTION
+This SAR concerns [BUSINESS_NAME], a cash-intensive business whose deposit patterns are inconsistent with similarly-sized businesses in the same industry.
+
+WHO
+[BUSINESS_NAME] (Account #[ACCOUNT_NUMBER]) is operated by [OWNER_NAME], operating as a [BUSINESS_TYPE] since [BUSINESS_START_DATE]. The business is located at [ADDRESS] and employs approximately [NUM_EMPLOYEES] staff.
+
+WHAT
+The business makes cash deposits averaging $[AVG_DEPOSIT] per deposit, [NUM_DEPOSITS] times monthly, totaling approximately $[MONTHLY_TOTAL]. Industry benchmarks for similar-sized [BUSINESS_TYPE] businesses indicate expected monthly cash deposits of $[INDUSTRY_BENCHMARK], making this business's cash activity [PERCENTAGE]% higher than industry norms.
+
+WHEN
+The elevated cash deposit pattern has been consistent since [START_DATE]. Deposits occur [PATTERN_DESCRIPTION], typically at [TIME_PATTERN].
+
+WHERE
+All deposits are made at [BRANCH_LOCATION]. Physical inspection of the business location reveals a retail space of approximately [SQUARE_FEET] square feet with [CUSTOMER_TRAFFIC_OBSERVATION].
+
+WHY SUSPICIOUS
+The cash volumes significantly exceed what would be expected for a business of this size and type. The customer traffic observed does not support the reported sales volumes. This discrepancy suggests potential cash from illicit sources being commingled with legitimate business receipts.
+
+HOW
+The business may be used as a front to launder illicit cash through what appears to be legitimate business deposits. This is a common money laundering technique where cash from drug trafficking or other crimes is deposited as apparent business income.
+
+CONCLUSION
+The inconsistency between actual business indicators and cash deposit volumes raises concerns about the source of funds. This activity is being reported for investigation of potential money laundering.
+""",
+        "key_elements": ["cash-intensive", "exceeds industry norms", "business front", "commingling"]
+    },
+    {
+        "typology": "funnel_account",
+        "narrative": """
+INTRODUCTION
+This SAR documents a suspected funnel account operation involving [PRIMARY_ACCOUNT_HOLDER], where funds from multiple sources are concentrated and then distributed to a limited number of beneficiaries.
+
+WHO
+[PRIMARY_ACCOUNT_HOLDER] (Account #[ACCOUNT_NUMBER]) is a [AGE]-year-old [OCCUPATION] with reported income of $[REPORTED_INCOME]. [NUM_RELATED] related accounts have been identified with apparent common control.
+
+WHAT
+Analysis reveals a pattern where [NUM_SOURCE_ACCOUNTS] different accounts make regular transfers to the primary account, which then consolidates and redistributs the funds. Over [TIME_PERIOD], $[TOTAL_COLLECTED] was received from various sources and $[TOTAL_DISTRIBUTED] was sent to [NUM_BENEFICIARIES] beneficiaries.
+
+WHEN
+The funnel pattern was first detected on [DETECTION_DATE], with activity occurring consistently since [PATTERN_START_DATE]. Transfers follow a predictable cycle: collection phase ([COLLECTION_DAYS]), followed by distribution phase ([DISTRIBUTION_DAYS]).
+
+WHERE
+Source accounts are distributed across [GEOGRAPHIC_DISTRIBUTION]. Beneficiary accounts are primarily located in [BENEFICIARY_LOCATIONS]. All accounts use similar transaction patterns and timing.
+
+WHY SUSPICIOUS
+The systematic collection and redistribution of funds through a central account is characteristic of funnel account schemes used in money laundering. The controlled timing and consistent patterns suggest coordination rather than legitimate business relationships.
+
+HOW
+The account structure appears designed to aggregate funds from multiple sources to obscure their origin before redistribution. This layering technique is commonly used in money laundering to distance illicit funds from their source.
+
+CONCLUSION
+The funnel account pattern and coordinated timing indicate suspected money laundering activity requiring investigation.
+""",
+        "key_elements": ["funnel account", "multiple sources", "coordinated pattern", "layering technique"]
+    },
+    {
+        "typology": "smurfing",
+        "narrative": """
+INTRODUCTION
+This report documents suspected smurfing activity involving [PRIMARY_INDIVIDUAL] and a network of [NUM_INDIVIDUALS] individuals making coordinated deposits.
+
+WHO
+[PRIMARY_INDIVIDUAL] (Account #[PRIMARY_ACCOUNT]) is linked to [NUM_RELATED_ACCOUNTS] accounts held by [RELATED_NAMES]. Investigation reveals these individuals share [RELATIONSHIP_TYPE] and/or [COMMON_ADDRESS].
+
+WHAT
+Over [TIME_PERIOD], the network of accounts received [TOTAL_DEPOSITS] deposits totaling $[TOTAL_AMOUNT]. Each deposit was below $[THRESHOLD], with individual amounts ranging from $[MIN] to $[MAX]. Deposits were made by [NUM_DEPOSITORS] different individuals at [NUM_BRANCHES] branches.
+
+WHEN
+The coordinated activity began on [START_DATE]. Analysis shows deposits occur in clusters, with multiple individuals making deposits on the same day at different branches, typically within a [TIMEFRAME] window.
+
+WHERE
+Deposits were spread across [GEOGRAPHIC_AREA], with no single branch receiving more than [MAX_PER_BRANCH]% of deposits. The geographic distribution appears intentionally designed to avoid pattern detection.
+
+WHY SUSPICIOUS
+The coordinated timing, relationship between depositors, consistent structuring below reporting thresholds, and deliberate geographic distribution are hallmarks of smurfing - using multiple people to make smaller deposits to avoid detection and reporting requirements.
+
+HOW
+The network appears organized to break down larger amounts of cash into smaller deposits made by multiple individuals across various locations and times. This is a structured money laundering technique designed to evade Bank Secrecy Act reporting.
+
+CONCLUSION
+The coordination, relationships, and structured nature of deposits indicate organized smurfing activity for suspected money laundering purposes.
+""",
+        "key_elements": ["smurfing", "multiple depositors", "coordinated timing", "network operation"]
+    },
+    {
+        "typology": "elderly_exploitation",
+        "narrative": """
+INTRODUCTION
+This SAR concerns suspected financial exploitation of [VICTIM_NAME], an elderly customer showing signs of account manipulation by third parties.
+
+WHO
+[VICTIM_NAME] (Account #[ACCOUNT_NUMBER]) is a [AGE]-year-old retiree who has maintained an account since [OPEN_DATE]. Historical account management was conservative, with regular Social Security deposits and minimal activity. [SUSPECT_NAME] was recently added as a joint account holder on [DATE_ADDED].
+
+WHAT
+Following the addition of [SUSPECT_NAME], account activity changed dramatically. Withdrawals totaling $[TOTAL_WITHDRAWALS] were made, including [NUM_LARGE_WITHDRAWALS] withdrawals over $[LARGE_AMOUNT]. Funds were used for [WITHDRAWAL_PURPOSES] which are inconsistent with the customer's historical patterns and known needs.
+
+WHEN
+The concerning activity began [DAYS] days after [SUSPECT_NAME] was added to the account on [DATE_ADDED]. Prior to this date, the account had maintained stable balances averaging $[HISTORICAL_BALANCE] with minimal activity.
+
+WHERE
+Withdrawals were made at [LOCATIONS], including locations the customer has no known connection to. Bank staff report the customer appeared [OBSERVED_CONDITION] during recent visits and deferred all decisions to [SUSPECT_NAME].
+
+WHY SUSPICIOUS
+The dramatic change in account behavior following the addition of a joint holder, combined with observed indicators of diminished capacity and potential coercion, suggests financial exploitation. The pattern is consistent with elder financial abuse where a trusted individual gains account access and systematically depletes the victim's assets.
+
+HOW
+[SUSPECT_NAME] appears to have gained the customer's trust and account access, then initiated a series of withdrawals that benefit the suspect rather than the customer. This pattern of exploitation often involves isolation of the victim and depletion of assets.
+
+CONCLUSION
+Based on the behavioral changes, suspicious withdrawals, and observed interactions, this activity is being reported as suspected elder financial exploitation requiring investigation and potential protective intervention.
+""",
+        "key_elements": ["elder exploitation", "joint account addition", "unusual withdrawals", "diminished capacity"]
+    }
+]
+
+# Save templates
+with open('data/sar_templates.json', 'w') as f:
+    json.dump(SAR_TEMPLATES, f, indent=2)
+
+print(f"[OK] Saved {len(SAR_TEMPLATES)} SAR templates to data/sar_templates.json")
