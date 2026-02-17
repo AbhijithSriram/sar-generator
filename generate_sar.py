@@ -208,10 +208,10 @@ SAR NARRATIVE:
     print("   (This may take 30-90 seconds...)")
 
     # Generate narrative
-    narrative = llm.invoke(prompt_text)
+    response = llm.invoke(prompt_text)
 
-    # Clean up the narrative
-    narrative = narrative.strip()
+    # Extract the string content from the AIMessage object
+    narrative = response.content.strip()
 
     print(f"\n[OK] Narrative generated!")
     print(f"   Length: {len(narrative.split())} words")
