@@ -16,8 +16,6 @@ from generate_sar import (
     format_customer_info, format_transaction_summary
 )
 
-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
-
 # Page config
 st.set_page_config(
     page_title="SAR Narrative Generator",
