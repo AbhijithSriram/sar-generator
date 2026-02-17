@@ -8,7 +8,7 @@ import joblib
 import glob
 import os
 from datetime import datetime
-from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from generate_sar import (
     generate_sar_narrative, validate_sar_compliance,
@@ -43,6 +43,7 @@ st.markdown("""
 
 # Load data
 @st.cache_resource
+@st.cache_resource
 def load_all_data():
     conn = sqlite3.connect('aml_data.db')
     customers = pd.read_sql('SELECT * FROM customers', conn)
@@ -54,14 +55,21 @@ def load_all_data():
     explainer = joblib.load('shap_explainer.pkl')
     feature_cols = joblib.load('feature_columns.pkl')
 
-    # RAG components
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    # 1. RAG components - Use HuggingFace for Cloud compatibility
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
+    # 2. Initialize the vectorstore (CRITICAL: This was missing in your snippet)
     vectorstore = Chroma(
         persist_directory='./chroma_db',
         embedding_function=embeddings
     )
 
-    llm = ChatGroq(model_name="mistral-7b-instruct-v0.1", temperature=0.1)
+    # 3. Use st.secrets for the API key to avoid GitHub push protection errors
+    llm = ChatGroq(
+        groq_api_key=st.secrets["GROQ_API_KEY"],
+        model_name="mistral-7b-instruct-v0.1", 
+        temperature=0.1
+    )
 
     return customers, transactions, alerts, features_df, explainer, feature_cols, vectorstore, llm
 
