@@ -14,11 +14,6 @@ data/ibm_aml/
 data/paysim/
 data/synthetic_aml/
 
-# Database and Vector Store
-# Note: We ignore the actual DB files so the repo stays light. 
-# You will run your scripts to regenerate these on the host.
-*.db
-chroma_db/
 
 # Local model storage (Mistral/Ollama)
 models/mistral/
