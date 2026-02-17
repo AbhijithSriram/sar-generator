@@ -7,7 +7,7 @@ import joblib
 import re
 import os
 from datetime import datetime
-from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 
@@ -373,7 +373,8 @@ if __name__ == "__main__":
 
     # Load RAG components
     print("\nLoading components...")
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
     vectorstore = Chroma(
         persist_directory='./chroma_db',
         embedding_function=embeddings
