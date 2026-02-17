@@ -68,7 +68,7 @@ def load_all_data():
     # 3. Use st.secrets for the API key to avoid GitHub push protection errors
     llm = ChatGroq(
         groq_api_key=st.secrets["GROQ_API_KEY"],
-        model_name="mistral-7b-instruct-v0.1", 
+        model_name="llama-3.1-8b-instant", 
         temperature=0.1
     )
 

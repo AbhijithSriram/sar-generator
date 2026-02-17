@@ -380,7 +380,8 @@ if __name__ == "__main__":
         embedding_function=embeddings
     )
 
-    llm = ChatGroq(model_name="mistral-7b-instruct-v0.1", temperature=0.1)
+    model_name="llama-3.1-8b-instant", 
+    temperature=0.1
 
     features_df = pd.read_csv('alert_features_scored.csv')
     explainer = joblib.load('shap_explainer.pkl')
