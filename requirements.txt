@@ -9,6 +9,8 @@ xgboost
 chromadb
 langchain
 langchain-community
+langchain-chroma
+langchain-huggingface
 langchain-groq
 faker
 sentence-transformers

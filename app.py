@@ -9,6 +9,7 @@ import glob
 import os
 from datetime import datetime
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 from langchain_groq import ChatGroq
 from generate_sar import (
     generate_sar_narrative, validate_sar_compliance,
